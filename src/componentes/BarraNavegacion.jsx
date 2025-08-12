@@ -5,19 +5,28 @@ import DiamondIcon from '@mui/icons-material/Diamond';
 
 function BarraNavegacion() {
   return (
-    // AppBar es la barra superior de MUI
     <AppBar position="fixed" color="primary" elevation={1}>
       <Toolbar>
-        {/* Contenedor para el logo y el nombre */}
+        {/* Logo y nombre de la app */}
         <Box sx={{ display: 'flex', alignItems: 'center', flexGrow: 1 }}>
           <DiamondIcon sx={{ mr: 1 }} />
-          <Typography variant="h6" component="div">
+          <Typography variant="h6" component="div" fontWeight="bold">
             Painita
           </Typography>
         </Box>
 
-        {/* Botón de Iniciar Sesión */}
-        <Button color="inherit" variant="outlined">
+        {/* Botón de inicio de sesión */}
+        <Button
+          color="inherit"
+          variant="outlined"
+          sx={{
+            borderColor: 'white',
+            color: 'white',
+            '&:hover': {
+              backgroundColor: 'rgba(255, 255, 255, 0.1)',
+            },
+          }}
+        >
           Iniciar Sesión
         </Button>
       </Toolbar>

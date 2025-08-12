@@ -1,32 +1,38 @@
 // src/App.jsx
 import React from 'react';
-import { Container, Box, Typography, Toolbar } from '@mui/material';
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { CssBaseline, Toolbar, Container, Box, Typography } from '@mui/material';
 
-// Importamos todos nuestros componentes
+// Componentes existentes
 import BarraNavegacion from './componentes/BarraNavegacion';
 import CalculadoraCredito from './componentes/CalculadoraCredito';
 import SeccionQuienesSomos from './componentes/SeccionQuienesSomos';
 import SeccionTestimonios from './componentes/SeccionTestimonios';
 import SeccionContacto from './componentes/SeccionContacto';
+import SolicitudCredito from './componentes/solicitud/SolicitudCredito'; // <-- tu contenedor real
 
-function App() {
+// Ruta protegida simple basada en localStorage
+function PrivateRoute({ children }) {
+  const isAuth =
+    localStorage.getItem('isAuthenticated') === 'true' || !!localStorage.getItem('token');
+  return isAuth ? children : <Navigate to="/" replace />;
+}
+
+// Página principal (landing) con tu layout existente
+function HomeLanding() {
   return (
     <Box sx={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
-      <BarraNavegacion />
-      
-      {/* El contenido principal de la página */}
       <Box component="main" sx={{ flexGrow: 1 }}>
-        {/* === Sección Héroe (Calculadora) === */}
         <Box
           sx={{
             display: 'flex',
             justifyContent: 'center',
             alignItems: 'center',
-            minHeight: '100vh', // Ocupa toda la altura de la pantalla
+            minHeight: '100vh',
             textAlign: 'center',
-            pt: { xs: 12, md: 8 }, // Padding top para dejar espacio a la barra de navegación
+            pt: { xs: 6, md: 4 }, // espacio adicional del héroe (la AppBar ya está compensada por <Toolbar /> global)
             pb: { xs: 6, md: 8 },
-            background: 'linear-gradient(to bottom, #f0f2f5 70%, #ffffff 30%)' // Un fondo degradado sutil
+            background: 'linear-gradient(to bottom, #f0f2f5 70%, #ffffff 30%)',
           }}
         >
           <Container maxWidth="md">
@@ -42,14 +48,12 @@ function App() {
           </Container>
         </Box>
 
-        {/* === Sección Quiénes Somos === */}
         <Box sx={{ py: { xs: 8, md: 10 }, bgcolor: 'background.paper' }}>
           <Container maxWidth="lg">
             <SeccionQuienesSomos />
           </Container>
         </Box>
 
-        {/* === Sección Testimonios === */}
         <Box sx={{ py: { xs: 8, md: 10 } }}>
           <Container maxWidth="lg">
             <SeccionTestimonios />
@@ -57,7 +61,6 @@ function App() {
         </Box>
       </Box>
 
-      {/* === Footer (Contacto) === */}
       <Box component="footer" sx={{ py: 6, bgcolor: 'background.paper' }}>
         <Container maxWidth="lg">
           <SeccionContacto />
@@ -67,4 +70,25 @@ function App() {
   );
 }
 
-export default App;
+export default function App() {
+  return (
+    <BrowserRouter>
+      <CssBaseline />
+      <BarraNavegacion />
+      {/* Espaciador invisible del alto del AppBar/Toolbar para evitar que tape el contenido */}
+      <Toolbar />
+      <Routes>
+        <Route path="/" element={<HomeLanding />} />
+        <Route
+          path="/solicitud"
+          element={
+            <PrivateRoute>
+              <SolicitudCredito />
+            </PrivateRoute>
+          }
+        />
+        <Route path="*" element={<Navigate to="/" replace />} />
+      </Routes>
+    </BrowserRouter>
+  );
+}
